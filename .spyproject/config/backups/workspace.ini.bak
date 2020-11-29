@@ -6,5 +6,5 @@ save_non_project_files = False
 
 [main]
 version = 0.2.0
-recent_files = ['C:\\Users\\timvr\\.spyder-py3\\temp.py', 'Qiskit tutorials\\Qiskit tutorial.py']
+recent_files = ['src\\launch.py', 'src\\mastermind\\game\\quantumgame.py', 'src\\mastermind\\game\\algorithms\\knuth77.py', 'src\\mastermind\\game\\textgame.py', 'src\\mastermind\\game\\game.py']
 

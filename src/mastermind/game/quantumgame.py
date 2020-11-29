@@ -7,7 +7,7 @@ from scipy.special import binom
 
 # Following import is actually necessary for the 'mcrx' gate.
 # noinspection PyUnresolvedReferences
-from qiskit.extensions.standard import multi_control_rotation_gates
+from qiskit.circuit.library.standard_gates import multi_control_rotation_gates
 
 from experiment.qiskit_experiment import QiskitExperiment
 from experiment.util import filter_at

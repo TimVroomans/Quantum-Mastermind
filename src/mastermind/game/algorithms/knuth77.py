@@ -1,4 +1,3 @@
-import multiprocessing as multiprocessing
 from abc import ABC
 from functools import partial
 from itertools import product
@@ -89,12 +88,8 @@ class Knuth(Game, ABC):
         """
 
         # Construct a 'maximum' size Threadpool
-        pool = multiprocessing.Pool(multiprocessing.cpu_count() - 1)
+        #pool = multiprocessing.Pool(multiprocessing.cpu_count() - 1)
 
         # Populate the score list via multithreading. For each code execute the _score_code(...) method.
         # the partial() method here is used for the multithreading.
-        self._Score = np.array(
-            pool.map(partial(_score_code, max_num=len(self._Codes), pegs=self._Pegs, guesses=self._Guesses),
-                     self._Codes))
-        pool.close()
-        pool.join()
+        self._Score = _score_code(self._Codes, len(self._Codes), self._Pegs, self._Guesses)
