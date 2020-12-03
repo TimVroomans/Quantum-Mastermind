@@ -1,5 +1,4 @@
 from abc import ABC
-from functools import partial
 from itertools import product
 
 import numpy as np
