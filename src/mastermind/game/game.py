@@ -3,7 +3,7 @@ from abc import abstractmethod, ABC
 
 class Game(ABC):
 
-    def __init__(self, turns=10, num_slots=4, pin_amount=8, ask_input=True):
+    def __init__(self, turns=10, num_slots=4, pin_amount=6, ask_input=True):
         self.turns = turns
         self.num_slots = num_slots
         self.pin_amount = pin_amount

@@ -128,7 +128,7 @@ class Knuth(Game, ABC):
 
         # Remove from the remaining possible codes, those codes who do not give the same response if the previous move
         # would be the code
-        self._Guesses = [el for el in self._Guesses if (correct, semi_correct) == _check_input(el, self._Move)]
+        self._Guesses = [guess for guess in self._Guesses if (correct, semi_correct) == _check_input(guess, self._Move)]
 
     def _min_max(self):
         '''
@@ -140,6 +140,10 @@ class Knuth(Game, ABC):
         none.
 
         '''
-        
+        C = len(self._Codes)
+        self._Score = [0]*C
+        for (i,code) in enumerate(self._Codes):
+            self._Score[i] = _score_code(code, C, self._Pegs, self._Guesses)
+            
         
         #self._Score = _score_code(self._Codes, len(self._Codes), self._Pegs, self._Guesses)
