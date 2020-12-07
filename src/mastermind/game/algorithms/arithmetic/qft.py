@@ -22,12 +22,12 @@ def swap_registers(circuit, q, n):
     return circuit
 
 def qft(circuit, q, n):
-    """QFT on the first n qubits in circuit"""
+    """QFT on the first n qubits from q in circuit"""
     qft_rotations(circuit, q, n)
     swap_registers(circuit, q, n)
     return circuit
 def iqft(circuit, q, n):
-    """Does the inverse QFT on the first n qubits in circuit"""
+    """Does the inverse QFT on the first n qubits from q in circuit"""
     # First we create a QFT circuit of the correct size:
     qft_circ = qft(QuantumCircuit(n), 0, n)
     # Then we take the inverse of this circuit
