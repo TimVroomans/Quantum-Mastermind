@@ -14,6 +14,7 @@ def dradloop(circuit, a, b, n, m):
         return circuit
     m += 1
     for qubit in range(m):
+        """Does not actually take the mth qubit of circuit for the actual operation"""
         circuit.cp(pi/2**(m-qubit-1), a+n-m,b+qubit)
     circuit.barrier()
     dradloop(circuit,a,b,n, m)
@@ -41,7 +42,7 @@ def drapsubloop(circuit, a, b, n, m):
     drapsubloop(circuit,a,b,n, m)
 def subber(circuit, a, b, na, nb):
     """subtracts the first na qubits from qubit a to the first nb qubits from qubit b"""
-    """if a and b are of unequal size, a must be the shorter number"""
+    """if a and b are of unequal length, a must be the shorter number"""
     if na > nb:
         print("Draper Subtractor Error: a must be of smaller length than b!")
     n = nb
