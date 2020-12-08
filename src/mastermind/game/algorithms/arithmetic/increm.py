@@ -50,3 +50,31 @@ def c2decrement(circuit, q, n, c1, c2):
     iqft(circuit, q, n)
     circuit.barrier()
     return circuit
+def cnincrement(circuit, q, n, c1, nc):
+    """Adds +1. On qubits q to q+n-1 of circuit with nc control qubits from qubit c1"""
+    circuit.barrier()
+    qft(circuit, q, n)
+    circuit.barrier()
+    for qubit in range(q, q+n):
+        qcs = QuantumCircuit(1)
+        qcs.rz(pi/2**(n+q-qubit-1),0)
+        ncrz = qcs.to_gate().control(nc)
+        circuit.append(ncrz, [*range(c1,c1+nc), qubit])
+    circuit.barrier()
+    iqft(circuit, q, n)
+    circuit.barrier()
+    return circuit
+def cndecrement(circuit, q, n, c1, nc):
+    """Subtracts +1. On qubits q to q+n-1 of circuit with nc control qubits from qubit c1"""
+    circuit.barrier()
+    qft(circuit, q, n)
+    circuit.barrier()
+    for qubit in range(q, q+n):
+        qcs = QuantumCircuit(1)
+        qcs.rz(-pi/2**(n+q-qubit-1),0)
+        ncrz = qcs.to_gate().control(nc)
+        circuit.append(ncrz, [*range(c1,c1+nc), qubit])
+    circuit.barrier()
+    iqft(circuit, q, n)
+    circuit.barrier()
+    return circuit
