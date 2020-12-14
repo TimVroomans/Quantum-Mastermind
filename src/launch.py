@@ -1,7 +1,7 @@
 import tkinter as tk
 
 from mastermind.game.algorithms.bernstein_vazirani import BernsteinVazirani
-from mastermind.game.textgame import TextClassical, TextQuantum, TextKnuth, TextQnuth
+from mastermind.game.textgame import TextClassical, TextKnuth, TextQnuth, TextQuantum
 from mastermind.game.visual.visual_mastermind import GameView
 
 def _choose_game():

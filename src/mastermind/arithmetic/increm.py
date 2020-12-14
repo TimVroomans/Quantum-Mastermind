@@ -5,7 +5,8 @@ Created on Wed Dec  2 18:25:35 2020
 """
 from math import pi
 from qiskit import *
-from qft import qft, iqft
+from mastermind.arithmetic.qft import qft, iqft
+
 def increment(circuit, q, n):
     """Adds +1 on number spanned by qubits q to q+n-1"""
     qft(circuit, q, n)

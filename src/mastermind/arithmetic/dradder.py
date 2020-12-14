@@ -8,7 +8,7 @@ implements positive integer addition and subtraction functions based on a Draper
 
 from math import pi
 from qiskit import *
-from qft import qft, iqft
+from mastermind.arithmetic.qft import qft, iqft
 def dradloop(circuit, a, b, n, m):
     if m >= n:
         return circuit

@@ -1,14 +1,13 @@
 from abc import ABC
-from itertools import combinations, permutations
-
+from itertools import permutations
 import numpy as np
 from qiskit import QuantumRegister, ClassicalRegister, QuantumCircuit
-from scipy.special import binom
 
 from experiment.qiskit_experiment import QiskitExperiment
 from experiment.util import filter_at
 from .game import Game
-from mastermind.arithmetic.increm import increment
+from mastermind.arithmetic.count import k4count
+from mastermind.arithmetic.comp import compare
 
 
 def _sum_filter(index, counts):
@@ -30,18 +29,18 @@ class QuantumGame(Game, ABC):
         colour_amount : integer, optional
             Amount of colours available for the code. The default is 6.
         ask_input : boolean, optional
-            Ask thu user for input. The default is True.
+            Ask user for input. The default is True.
 
         Returns
         -------
         None.
 
         '''
-        self.amount_colour_bits = int(np.ceil(np.log2(colour_amount)))
+        self.amount_colour_qubits = int(np.ceil(np.log2(colour_amount)))
         self.amount_answer_qubits = int(np.ceil(np.log2(num_slots))) + 1
         
         # Query register
-        self.q = QuantumRegister(self.amount_colour_bits * num_slots + 2, 'q')
+        self.q = QuantumRegister(self.amount_colour_qubits * num_slots, 'q')
         
         # Answer pin registers
         self.a = QuantumRegister(self.amount_answer_qubits, 'a')
@@ -50,7 +49,7 @@ class QuantumGame(Game, ABC):
         self.classical_b = ClassicalRegister(self.amount_answer_qubits, 'B')
         
         # Compare qubit register
-        self.COMP = QuantumRegister(1, 'COMP')
+        self.c = QuantumRegister(1, 'c')
         
         # Build circuit from registers
         self.circuit = QuantumCircuit(self.q, self.a, self.b, self.COMP, self.classical_a, self.classical_b)
@@ -60,10 +59,35 @@ class QuantumGame(Game, ABC):
         
         # Initialise Mastermind
         super(QuantumGame, self).__init__(turns, num_slots, colour_amount, ask_input)
+        
+        
+    def check_input(self, int_list, secret_sequence):
+        '''
+        
 
-    def check_input(self, int_list, sequence):
+        Parameters
+        ----------
+        int_list : List of integers
+            The query played.
+        secret_sequence : List of integers
+            The secret sequence to be compared against.
+
+        Returns
+        -------
+        a : Integer
+            Amount of correct pins.
+        b : TYPE
+            sum of a and amount of correct pins in wrong positions.
+
+        '''
+        # If the check circuit has not been made yet, make it
         if self.circuit.size() == 0:
-            self._construct_check_circuit(sequence)
+            self._construct_check_circuit(secret_sequence)
+        
+        # Run the circuit
+        result = self.experiment.run(self.circuit, 1)
+        
+        return a,b
 
     def _qc_sequence_chk(self, sequence, circuit, input_mode=False):
         for (pos, num) in enumerate(sequence):
@@ -75,7 +99,7 @@ class QuantumGame(Game, ABC):
 
         Parameters
         ----------
-        sequence : List
+        secret_sequence : List
             Secret sequence as used in mastermind.
 
         Returns
@@ -84,39 +108,80 @@ class QuantumGame(Game, ABC):
 
         '''
         # Find all permutations of the secret sequence
-        sequence_permutations = [p for p in permutations(sequence)]
+        # Reverse order because we want to end with the secret sequence
+        sequence_permutations = [p for p in permutations(sequence)].reverse()
         
-        for p in sequence_permutations:
-            for q in 
-    
+        # Build an oracle stage for each permutation of the secret sequence
+        for (i,p) in enumerate(sequence_permutations):
+            # Count the number of correct query qubits according to permutation
+            _count(p)
+            
+            # Compare a > b, value stord in qubit directly below b register
+            compare(self.circuit, self.a[0], self.b[0], len(self.a), len(self.b))
+            
+            # SWAP controlled by c
+            for qubit in range(len(self.a)):
+                self.circuit.cswap(self.c, self.a[qubit], self.b[qubit])
+                        
+            # Reset a and c 
+            if i+1 != len(sequence_permutations()):
+                self.circuit.reset(self.a)
+                self.circuit.reset(self.c)
+            
+            # Measure registers a and b
+            self.circuit.measure(self.a, self.classical_a)
+            self.circuit.measure(self.b, self.classical_b)
+            
+            # Return the check circuit
+            return self.circuit
+            
+    def _count(self, secret_sequence):
+        '''
+        Counts the amount of correct colours in the query according to
+        secret_sequence
 
-    def random_sequence(self):
-        # While not part of our project, we could've used our ndie.py to roll an 'pin_amount' sided dice 'num_slots'
-        # times to generate our sequence in a quantum way
-        return np.random.randint(0, self.pin_amount, size=self.num_slots).tolist()
+        Parameters
+        ----------
+        secret_sequence : List
+            The secret sequence the query is to be compared against.
 
+        Returns
+        -------
+        None.
 
-    def qc_xor(self, pin):
-        for i_p in range(pin):
-            for i_c in range(self.color_bits):
-                self.circuit.cx(self.color_bits * pin + i_c, self.color_bits * i_p + i_c)
+        '''
+        # write secret sequence as a bit string
+        secret_binary = [bin(x)[2:].zfill(self.amount_colour_qubits) for x in secret_sequence]
+        
+        # place x-gates where secret bit string equals zero
+        _secret_binary_to_x_gates(secret_binary)
+        
+        # count
+        k4count(self.circuit, 0, self.amount_colour_qubits, self.amount_colour_qubits+self.amount_answer_qubits)
+        
+        # place x-gates where secret bit string equals zero
+        _secret_binary_to_x_gates(secret_binary)
+        
+    def _secret_binary_to_x_gates(self, secret_binary):
+        '''
+        Places x-gates where secret_binary equals 0
 
-    def qc_inv(self, pin):
-        for i_q in range(self.color_bits * pin):
-            self.circuit.x(i_q)
+        Parameters
+        ----------
+        secret_binary : List
+            List of binary strings, each binary string corresponds to a colour
+            in the secret string.
 
-    def qc_tst(self, pin, color, code):
-        for i1 in range(code.count(color) + 1, pin + 2):
-            controls_list = list(combinations(range(pin), i1 - 1))
-            for i2 in controls_list:
-                angle = (-1) ** (i1 + code.count(color)) * binom(i1 - 2, code.count(color) - 1) * np.pi / self.num_slots
-                controls = [self.q[self.color_bits * pin + i] for i in range(self.color_bits)]
-                for i_p in i2:
-                    controls += [self.q[self.color_bits * i_p + i] for i in range(self.color_bits)]
-                self.circuit.mcrx(angle, controls, self.q[self.color_bits * self.num_slots + 1])
+        Returns
+        -------
+        Quantum circuit appended with X gates according to secret_binary.
 
-    def qc_chk(self, pin, color, circuit, input_mode=False):
-        for i_c in range(self.color_bits):
-            condition = (color & 2 ** i_c)
-            if (not condition and not input_mode) or (condition and input_mode):
-                circuit.x(self.color_bits * pin + i_c)
+        '''
+        for (qubit,b) in enumerate(secret_binary):
+            for i in b:
+                if i == 0:
+                    self.circuit.x(self.q[qubit])
+                else:
+                    self.circuit.i(self.q[qubit])
+        
+        return self.circuit
