@@ -79,16 +79,40 @@ def cndecrement(circuit, q, n, c1, nc):
     iqft(circuit, q, n)
     circuit.barrier()
     return circuit
-def countcnincrement(circuit, q, n, c1, nc):
-    """Does the same as cnincrement but does not perform an automatic qft and iqft at the start/end"""
+
+def countcnincrement(circuit, q, n, c):
+    '''
+    Does the same as cnincrement but does not perform an automatic qft and
+    iqft at the start/end
+
+    Parameters
+    ----------
+    circuit : QuantumCircuit
+        Quantum circuit to be appended with increment.
+    q : QuantumRegister
+        Register to be incremented.
+    n : Integer
+        Amount of qubits available in q for increment.
+    c  : Qubit List
+        control qubits
+
+    Returns
+    -------
+    circuit : QuantumCircuit
+        Quantum circuit appended with increment.
+
+    '''
     circuit.barrier()
-    for qubit in range(q, q+n):
+    for (i,qubit) in enumerate(q[0:n]):
         qcs = QuantumCircuit(1)
-        qcs.rz(pi/2**(n+q-qubit-1),0)
-        ncrz = qcs.to_gate().control(nc)
-        circuit.append(ncrz, [*range(c1,c1+nc), qubit])
+        phi = pi/2**(n-i)
+        #phi = pi/2**(n+q-qubit-1)
+        qcs.rz(phi,0)
+        ncrz = qcs.to_gate().control(len(c))
+        circuit.append(ncrz, [c, qubit], [])
     circuit.barrier()
     return circuit
+
 def countcndecrement(circuit, q, n, c1, nc):
     """Does the same as cndecrement but does not perform an automatic qft and iqft at the start/end"""
     circuit.barrier()
