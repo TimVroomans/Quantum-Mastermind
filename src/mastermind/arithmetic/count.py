@@ -8,7 +8,7 @@ from qiskit import *
 from mastermind.arithmetic.qft import qft, iqft
 from mastermind.arithmetic.increm import countcnincrement, countcndecrement
 
-def k4count(circuit, a, b,step):
+def count(circuit, a, b,step):
     '''
     Count function for 4 colours. Takes register a as control qubits. 
     Counts in register b 
@@ -43,9 +43,9 @@ def k4count(circuit, a, b,step):
     return circuit 
 
 
-def ik4count(circuit, a, b,step):
+def icount(circuit, a, b, step):
     '''
-    Count function for 4 colours. Takes register a as control qubits. 
+    Count function for k colours. Takes register a as control qubits. 
     Counts in register b 
 
     Parameters

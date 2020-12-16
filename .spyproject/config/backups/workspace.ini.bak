@@ -6,5 +6,5 @@ save_non_project_files = False
 
 [main]
 version = 0.2.0
-recent_files = ['src\\launch.py']
+recent_files = ['src\\launch.py', 'src\\mastermind\\arithmetic\\count.py', 'src\\mastermind\\arithmetic\\increm.py', 'src\\mastermind\\arithmetic\\qft.py', 'src\\mastermind\\arithmetic\\comp.py', 'src\\mastermind\\arithmetic\\dradder.py']
 
