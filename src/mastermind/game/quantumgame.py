@@ -97,7 +97,6 @@ def _mastermind_stage(circuit, q, a, b, c, p, keep_a=False):
     
     # If keep_a is true keep a
     if keep_a:
-        circuit.reset(c)
         return circuit
     else:
         circuit.reset(a)
@@ -206,8 +205,14 @@ class QuantumGame(Game, ABC):
         if self.circuit.size() == 0:
             # Build check circuit
             _build_mastermind_circuit(self.circuit, self.q, self.a, self.b, self.c, self.sequence) 
+            # Measure registers a and b
             self.circuit.measure(self.a, self.classical_a)
             self.circuit.measure(self.b, self.classical_b)
+            # Reset all registers for new query
+            self.circuit.reset(self.q)
+            self.circuit.reset(self.a)
+            self.circuit.reset(self.b)
+            self.circuit.reset(self.c)
         
         # Prepare q register in query
         binary_query = [bin(q)[2:].zfill(self.amount_colour_qubits) for q in query]
@@ -226,16 +231,19 @@ class QuantumGame(Game, ABC):
         # Run the circuit
         result = self.experiment.run(self.circuit, 1)
         counts = result.get_counts(self.circuit)
-        print('Secret string: ', self.sequence)
-        print('Counts: ', counts)
+        meas_ab = list(counts.keys())[0]
+        meas_ab = meas_ab.split()
         
-        # a = 
-        # b = 
+        # add prep_q again to erase its effect XX = I
+        self.circuit = prep_q + self.circuit
         
-        # correct = a
-        # semi_correct = b - a
+        a = int(meas_ab[1], 2)
+        b = int(meas_ab[0], 2)
         
-        # return correct, semi_correct
+        correct = a
+        semi_correct = b - a
+        
+        return correct, semi_correct
     
     def random_sequence(self):
         # Choose numbers between 0 and pin_amount (do this num_slots times)
