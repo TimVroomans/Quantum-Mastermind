@@ -4,12 +4,8 @@ Created on Wed Dec 16 14:58:05 2020
 
 @author: Gielc
 """
-import numpy as np
 from numpy import pi
-from qiskit import QuantumCircuit, execute, Aer, IBMQ
-from qiskit.providers.ibmq import least_busy
-from qiskit.tools.monitor import job_monitor
-from qiskit.visualization import plot_histogram, plot_bloch_multivector
+from qiskit import QuantumCircuit, execute, Aer
 
 def qft_rotations(circuit, q):
     n = len(q)
@@ -89,3 +85,31 @@ def qft(circuit, q):
     qft_rotations(circuit, q)
     swap_registers(circuit, q)
     return circuit
+def iqft(circuit, q):
+    n = len(q)
+    '''
+    Does the inverse QFT on the first n qubits from q in circuit
+    
+    Parameters
+    ----------
+    circuit : QuantumCircuit
+        Quantum Circuit to perform inverse QFT upon.
+    q : QuantumRegister
+        Register to perform inverse QFT upon.
+    n : Integer, optional
+        Perform inverse QFT upon first n qubits of q. The default is len(q).
+
+    Returns
+    -------
+    circuit : QuantumCircuit
+        Quantum Circuit appended with inverse QFT.
+    '''
+    # First we create a QFT circuit of the correct size:
+    qft_circ = QuantumCircuit(n)
+    qft_circ = qft(qft_circ, qft_circ.qubits)
+    # Then we take the inverse of this circuit
+    invqft_circ = qft_circ.inverse()
+    # And add it to the first n qubits in our existing circuit
+    circuit.append(invqft_circ, q[0:n])
+    # .decompose() allows us to see the individual gates
+    return circuit.decompose()
