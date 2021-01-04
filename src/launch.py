@@ -1,6 +1,6 @@
 import tkinter as tk
 
-from mastermind.game.algorithms.bernstein_vazirani import BernsteinVazirani
+#from mastermind.game.algorithms.bernstein_vazirani import BernsteinVazirani
 from mastermind.game.textgame import TextClassical, TextKnuth, TextQnuth, TextQuantum
 from mastermind.game.visual.visual_mastermind import GameView
 
@@ -24,7 +24,7 @@ def _choose_game():
             elif game_type == 4:
                 TextQnuth()
             elif game_type == 5:
-                BernsteinVazirani()
+               # BernsteinVazirani()
             else:
                 raise ValueError
             break
