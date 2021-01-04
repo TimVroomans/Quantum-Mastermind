@@ -173,7 +173,7 @@ def _binary_to_x_gates(circuit, q, secret_binary):
     return circuit
 
 class QuantumGame(Game, ABC):
-    def __init__(self, turns=10, num_slots=4, colour_amount=4, ask_input=True):
+    def __init__(self, turns=10, num_slots=4, colour_amount=6, ask_input=True):
         # Get some relevant numbers
         self.amount_colour_qubits = int(np.ceil(np.log2(colour_amount)))
         self.amount_answer_qubits = int(np.ceil(np.log2(num_slots))) + 1
