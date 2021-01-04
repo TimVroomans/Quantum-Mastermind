@@ -1,6 +1,6 @@
 import tkinter as tk
 
-from mastermind.game.textgame import TextClassical, TextKnuth, TextQnuth, TextQuantum
+from mastermind.game.textgame import TextClassical, TextKnuth, TextBuhrman, TextQnuth, TextQuantum
 from mastermind.game.visual.visual_mastermind import GameView
 
 def _choose_game():
@@ -21,6 +21,8 @@ def _choose_game():
                 TextKnuth()
             elif game_type == 4:
                 TextQnuth()
+            elif game_type == 5:
+                TextBuhrman()
             else:
                 raise ValueError
             break

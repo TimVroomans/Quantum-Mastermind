@@ -56,6 +56,21 @@ def _generate_pegs(num_slots):
     pegs = [(i, j - i) for i in range(n) for j in range(n) if j - i >= 0 and not (i == n - 2 and j - i > 0)]
     return pegs
 
+def _min_max(self):
+    '''
+    Assigns a score to each remaining code according to the minimum amount
+    of remaining guesses it can eliminate.
+
+    Returns
+    -------
+    none.
+
+    '''
+    C = len(self._Codes)
+    self._Score = [0]*C
+    for (i,code) in enumerate(self._Codes):
+        self._Score[i] = _score_code(code, C, self._Pegs, self._Guesses)
+
 
 class Knuth(Game, ABC):
     '''
@@ -130,20 +145,4 @@ class Knuth(Game, ABC):
         # would be the code
         self._Guesses = [guess for guess in self._Guesses if (correct, semi_correct) == _check_input(guess, self._Move)]
 
-    def _min_max(self):
-        '''
-        Assigns a score to each remaining code according to the minimum amount
-        of remaining guesses it can eliminate.
-
-        Returns
-        -------
-        none.
-
-        '''
-        C = len(self._Codes)
-        self._Score = [0]*C
-        for (i,code) in enumerate(self._Codes):
-            self._Score[i] = _score_code(code, C, self._Pegs, self._Guesses)
-            
-        
-        #self._Score = _score_code(self._Codes, len(self._Codes), self._Pegs, self._Guesses)
+    

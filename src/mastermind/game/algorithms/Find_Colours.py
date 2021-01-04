@@ -5,17 +5,9 @@ Created on Mon Jan  4 16:08:00 2021
 @author: 0tmar
 """
 
-
-from abc import ABC
-import numpy as np
-from qiskit import QuantumRegister, ClassicalRegister, QuantumCircuit
-
-from experiment.qiskit_experiment import QiskitExperiment
-from experiment.util import filter_at
-from .game import Game
 from mastermind.arithmetic.count import icount
 from mastermind.arithmetic.comp import compare
-from mastermind.algorithms.Mastermind_Oracle import build_mastermind_circuit
+from mastermind.game.algorithms.Mastermind_Oracle import build_mastermind_circuit
 
 def build_find_colours_circuit(circuit, b0, x, q, b, c, d, e, f, secret_sequence):
     '''
