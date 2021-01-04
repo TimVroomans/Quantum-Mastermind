@@ -1,7 +1,6 @@
 import tkinter as tk
 from abc import ABC
 
-from mastermind.game.algorithms.bernstein_vazirani import BernsteinVazirani
 from mastermind.game.classicalgame import ClassicalGame
 from mastermind.game.quantumgame import QuantumGame
 
@@ -152,7 +151,3 @@ class VisualQnuth(VisualKnuth, QuantumGame):
 class VisualQuantum(VisualGame, QuantumGame):
     def get_input(self):
         pass
-
-
-class VisualBV(VisualGame, BernsteinVazirani):
-    pass

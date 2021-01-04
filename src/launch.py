@@ -1,6 +1,5 @@
 import tkinter as tk
 
-#from mastermind.game.algorithms.bernstein_vazirani import BernsteinVazirani
 from mastermind.game.textgame import TextClassical, TextKnuth, TextQnuth, TextQuantum
 from mastermind.game.visual.visual_mastermind import GameView
 
@@ -10,7 +9,6 @@ def _choose_game():
     print("2. Quantum")
     print("3. Knuth (Classical Algorithm)")
     print("4. Qnuth (Knuth vs Quantum)")
-    print("5. Bernstein-Vazirani (Quantum Algorithm)")
 
     while True:
         try:
@@ -23,8 +21,6 @@ def _choose_game():
                 TextKnuth()
             elif game_type == 4:
                 TextQnuth()
-            elif game_type == 5:
-               # BernsteinVazirani()
             else:
                 raise ValueError
             break
