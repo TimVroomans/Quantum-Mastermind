@@ -7,7 +7,11 @@ Created on Mon Jan  4 16:08:00 2021
 
 from mastermind.arithmetic.count import icount
 from mastermind.arithmetic.comp import compare
+<<<<<<< HEAD
 from mastermind.game.algorithms.Mastermind_Oracle import build_mastermind_circuit
+=======
+from mastermind.algorithms.Mastermind_Oracle import build_mastermind_circuit, count_permuted
+>>>>>>> e501cfbb8f7b017478be8595bda566b63df67b44
 
 def build_find_colours_circuit(circuit, b0, x, q, b, c, d, e, f, secret_sequence):
     '''
@@ -41,7 +45,7 @@ def build_find_colours_circuit(circuit, b0, x, q, b, c, d, e, f, secret_sequence
     circuit.barrier()
     
     #1
-    build_mastermind_circuit(circuit, q=q, a=c, b=b0, c=d, secret_sequence=secret_sequence, keep_a=False)
+    count_permuted(circuit, q=q, a=b0, p=secret_sequence)
     circuit.barrier()
     
     #2
