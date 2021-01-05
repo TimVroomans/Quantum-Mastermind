@@ -8,9 +8,7 @@ Created on Mon Jan  4 16:08:00 2021
 from mastermind.arithmetic.count import icount
 from mastermind.arithmetic.comp import compare
 
-from mastermind.game.algorithms.Mastermind_Oracle import build_mastermind_circuit
-
-from mastermind.algorithms.Mastermind_Oracle import build_mastermind_circuit, count_permuted
+from mastermind.game.algorithms.Mastermind_Oracle import build_mastermind_circuit, count_permuted
 from qiskit import QuantumCircuit
 
 def build_find_colours_circuit(circuit, b0, x, q, b, c, d, e, f, secret_sequence):

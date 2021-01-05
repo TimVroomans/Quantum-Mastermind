@@ -4,6 +4,7 @@ from mastermind.game.algorithms.knuth77 import Knuth
 from mastermind.game.algorithms.Buhrman import Buhrman
 from mastermind.game.quantumgame import QuantumGame
 from mastermind.game.classicalgame import ClassicalGame
+from mastermind.game.quantumsolver import QuantumSolverGame
 from mastermind.game.game import Game
 
 
@@ -54,5 +55,5 @@ class TextKnuth(Knuth, TextGame, ClassicalGame):
 class TextQnuth(Knuth, TextGame, QuantumGame):
     pass
 
-class TextBuhrman(Buhrman, TextGame, QuantumGame):
+class TextBuhrman(Buhrman, TextGame, QuantumSolverGame):
     pass
