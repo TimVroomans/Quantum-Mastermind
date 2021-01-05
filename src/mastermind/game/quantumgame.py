@@ -34,8 +34,8 @@ class QuantumGame(Game, ABC):
         super(QuantumGame, self).__init__(turns, num_slots, colour_amount, ask_input)
         
         
-    def check_input(self, query, secret_sequence):   
-        # If ther is no check circuit:
+    def check_input(self, query, secret_sequence):  
+        # If there is no check circuit:
         if self.circuit.size() == 0:
             # Build check circuit
             oracle.build_mastermind_circuit(self.circuit, self.q, self.a, self.b, self.c, self.sequence) 

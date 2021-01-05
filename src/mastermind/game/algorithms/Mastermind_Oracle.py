@@ -45,23 +45,20 @@ def build_mastermind_circuit(circuit, q, a, b, c, secret_sequence, keep_a=True):
     unique_list = []
     for p in permutation_list:
         if p not in unique_list:
-            if p == secret_sequence:
+            if p == tuple(secret_sequence):
                 pass
             else:
                 unique_list.append(p)
     
     permutation_list = unique_list
-    permutation_list.append(secret_sequence)
+    permutation_list.append(tuple(secret_sequence))
     
     # Build a mastermind stage for each permutation
     for (i,p) in enumerate(permutation_list):
-        if i != len(permutation_list)-1:
-            mastermind_stage(circuit, q, a, b, c, p)
-            print('building stage ', i+1, ' of ', len(permutation_list), '...')
-        else:
-            mastermind_stage(circuit, q, a, b, c, p, keep_a)
-            print('building last stage...')
-    
+        mastermind_stage(circuit, q, a, b, c, p)
+        print('building stage ', i+1, ' of ', len(permutation_list), '...')
+        
+    count_permuted(circuit, q, a, secret_sequence)
     # Return the check circuit
     return circuit
     
