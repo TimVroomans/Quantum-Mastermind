@@ -38,27 +38,29 @@ def build_find_colour_positions_circuit(circuit, x, q, a, c, d, secret_sequence)
     '''
     print('Building quantum circuit...')
     
-    #0
+    #0: init
     circuit.barrier()
     
-    #1
+    #1: Hadamard
     [circuit.h(qubit) for qubit in x]
     circuit.barrier()
     
-    #2
+    #2: build query
     _build_query_two_colours(circuit, x, q, c, d)
     circuit.barrier()
     
-    #3
+    #3: get Oracle a response
     count_permuted(circuit, q=q, a=a, p=secret_sequence)
     circuit.barrier()
     
-    #4
+    #4: Z gate on output LSB
     circuit.z(a[0]) # should be the LSB; maybe that's actually a[-1]!!!!!!!!!!
     circuit.barrier()
     
-    #10
-    pass #undo
+    #5: undo step 2 & 3
+    count_permuted(circuit, q=q, a=a, p=secret_sequence)
+    _build_query_two_colours(circuit, x, q, c, d)
+    circuit.barrier()
     
     #11
     [circuit.h(qubit) for qubit in x]
