@@ -44,7 +44,7 @@ def build_find_colours_circuit(circuit, b0, x, q, b, c, d, e, f, secret_sequence
     
     
     #1: calc b0
-    count_permuted(circuit, q=q, a=b0, p=secret_sequence)
+    count_permuted(circuit, q=q, a=b0, p=secret_sequence) # MMa == MMb in this case (with input = 0000)
     circuit.barrier()
     
     
@@ -63,18 +63,14 @@ def build_find_colours_circuit(circuit, b0, x, q, b, c, d, e, f, secret_sequence
     circuit.barrier()
     
     
-    #5: init c reg to k (=power of two)
+    #5: init c reg to k (=power of two) & calc ell in reg c
     circuit.x(c[-1])  # should be MSB
-    circuit.barrier()
-    
-    
-    #6: calc ell in reg c
     icount(circuit, a=b, b=c, step=1)  # or step = -1?
     circuit.barrier()
     
     
     #7: boolean 1
-    compare(circuit, a=b, b=c, c=d)
+    compare(circuit, a=b, b=c, c=d) # b > ell (c)
     circuit.barrier()
     
     
@@ -114,10 +110,11 @@ def build_find_colours_circuit(circuit, b0, x, q, b, c, d, e, f, secret_sequence
     icount(circuit, a=b, b=c, step=1)  # or step = -1?
     circuit.x(c[-1])  # should be MSB
     
-    temp_circuit = QuantumCircuit(q,b,c,d) #(beuned inverse of MMb)
-    build_mastermind_circuit(temp_circuit, q=q, a=c, b=b, c=d, secret_sequence=secret_sequence, keep_a=False)
-    temp_circuit.inverse()
-    circuit += temp_circuit
+    # temp_circuit = QuantumCircuit(q,b,c,d) #(beuned inverse of MMb)
+    # build_mastermind_circuit(temp_circuit, q=q, a=c, b=b, c=d, secret_sequence=secret_sequence, keep_a=False)
+    # temp_circuit.inverse()
+    # circuit += temp_circuit
+    circuit.reset(b)
     
     _build_query(circuit, x, q)
     circuit.barrier()
@@ -142,7 +139,7 @@ def _build_query(circuit, x, q):
     
     for (i,binary) in enumerate(binary_list):
         for (j,bit) in enumerate(binary[::-1]):
-            if bit == '1':
+            if bit == '1': # or '0'?
                 circuit.cnot(x[i], q[i*amount_colour_bits + j])
             else:
                 pass

@@ -57,8 +57,9 @@ def build_mastermind_circuit(circuit, q, a, b, c, secret_sequence, keep_a=True):
     for (i,p) in enumerate(permutation_list):
         mastermind_stage(circuit, q, a, b, c, p)
         print('building stage ', i+1, ' of ', len(permutation_list), '...')
-        
-    count_permuted(circuit, q, a, secret_sequence)
+    
+    if keep_a:
+        count_permuted(circuit, q, a, secret_sequence)
     # Return the check circuit
     return circuit
     
