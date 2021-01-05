@@ -40,15 +40,18 @@ def build_mastermind_circuit(circuit, q, a, b, c, secret_sequence, keep_a=True):
     # Find all permutations of the secret sequence
     # Reverse order because we want to end with the secret sequence
     permutation_list = [p for p in permutations(secret_sequence)]
-    permutation_list.reverse()
     
-    # Keep unique permutations
+    # Keep unique permutations and 
     unique_list = []
     for p in permutation_list:
         if p not in unique_list:
-            unique_list.append(p)
+            if p == secret_sequence:
+                pass
+            else:
+                unique_list.append(p)
     
     permutation_list = unique_list
+    permutation_list.append(secret_sequence)
     
     # Build a mastermind stage for each permutation
     for (i,p) in enumerate(permutation_list):
