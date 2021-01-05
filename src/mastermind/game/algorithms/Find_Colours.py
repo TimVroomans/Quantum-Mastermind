@@ -5,7 +5,7 @@ Created on Mon Jan  4 16:08:00 2021
 @author: 0tmar
 """
 
-from mastermind.arithmetic.count import icount
+from mastermind.arithmetic.count import count, icount
 from mastermind.arithmetic.comp import compare
 
 from mastermind.game.algorithms.Mastermind_Oracle import build_mastermind_circuit, count_permuted
@@ -63,7 +63,7 @@ def build_find_colours_circuit(circuit, b0, x, q, b, c, d, e, f, secret_sequence
     circuit.barrier()
     
     
-    #5: init c reg to k (=power of two) & calc ell in reg c
+    #5: calc ell in reg c: init to k (=assumed power of two, so 100 for k=4)
     circuit.x(c[-1])  # should be MSB
     icount(circuit, a=b, b=c, step=1)  # or step = -1?
     circuit.barrier()
@@ -107,7 +107,7 @@ def build_find_colours_circuit(circuit, b0, x, q, b, c, d, e, f, secret_sequence
     circuit.x(e)
     
     compare(circuit, a=b, b=c, c=d)
-    icount(circuit, a=b, b=c, step=1)  # or step = -1?
+    count(circuit, a=b, b=c, step=1)  # or step = -1?
     circuit.x(c[-1])  # should be MSB
     
     # temp_circuit = QuantumCircuit(q,b,c,d) #(beuned inverse of MMb)

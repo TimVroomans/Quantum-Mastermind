@@ -9,6 +9,7 @@ def _choose_game():
     print("2. Quantum")
     print("3. Knuth (Classical Algorithm)")
     print("4. Qnuth (Knuth vs Quantum)")
+    print("5. Buhrman (Quantum Algorithm)")
 
     while True:
         try:

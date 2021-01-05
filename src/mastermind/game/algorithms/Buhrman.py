@@ -13,14 +13,16 @@ from mastermind.game.game import Game
 
 class Buhrman(Game, ABC):
     def __init__(self, num_slots=4, num_colours=4):
-        self.logk = int(np.ceil(np.log2(num_colours)))
-        self.logn = int(np.ceil(np.log2(num_slots)))
+        n = num_slots
+        k = num_colours
+        logn = int(np.ceil(np.log2(n)))
+        logk = int(np.ceil(np.log2(k)))
         # Quantum Registers
-        self.b0 = QuantumRegister(self.logk+1,'b0')
-        self.x = QuantumRegister(num_colours, 'x')
-        self.q = QuantumRegister(num_slots*self.logk, 'q')
-        self.b = QuantumRegister(self.logk+1,'b')
-        self.c = QuantumRegister(self.logn+1,'c')
+        self.b0 = QuantumRegister(logk+1,'b0')
+        self.x = QuantumRegister(k, 'x')
+        self.q = QuantumRegister(n*logk, 'q')
+        self.b = QuantumRegister(logk+1,'b')
+        self.c = QuantumRegister(logn+1,'c')
         self.d = QuantumRegister(1,'d')
         self.e = QuantumRegister(1,'e')
         self.f = QuantumRegister(1,'f')
@@ -55,4 +57,8 @@ class Buhrman(Game, ABC):
     
     def random_sequence(self):
         # Choose numbers between 0 and pin_amount (do this num_slots times)
-        return np.random.randint(0, self.pin_amount, size=self.num_slots)
+        
+        arr = np.array([1, 1, 2, 2])
+        print("\n\nWATCH OUT: RUNNING WITH HARDCODED STRING %s !!!\n\n" % (arr))
+        return arr
+        #return np.random.randint(0, self.pin_amount, size=self.num_slots)
