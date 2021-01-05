@@ -102,7 +102,7 @@ def build_find_colours_circuit(circuit, b0, x, q, b, c, d, e, f, secret_sequence
     compare(circuit, a=b, b=c, c=d)
     icount(circuit, a=b, b=c, step=1)  # or step = -1?
     circuit.x(c[-1])  # should be MSB
-    build_mastermind_circuit(circuit, q=q, a=c, b=b, c=d, secret_sequence=secret_sequence, keep_a=False)
+    build_mastermind_circuit(circuit, q=q, a=c, b=b, c=d, secret_sequence=secret_sequence, keep_a=False).inverse()
     _build_query(circuit, x, q)
     circuit.barrier()
     
@@ -125,7 +125,7 @@ def _build_query(circuit, x, q):
     
     for (i,binary) in enumerate(binary_list):
         for (j,bit) in enumerate(binary[::-1]):
-            if bit == '0':
+            if bit == '1':
                 circuit.cnot(x[i], q[i*amount_colour_bits + j])
             else:
                 pass
