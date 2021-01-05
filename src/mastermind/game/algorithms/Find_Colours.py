@@ -39,38 +39,46 @@ def build_find_colours_circuit(circuit, b0, x, q, b, c, d, e, f, secret_sequence
     '''
     print('Building quantum circuit...')
     
-    #0
+    #0: init
     circuit.barrier()
     
-    #1
+    
+    #1: calc b0
     count_permuted(circuit, q=q, a=b0, p=secret_sequence)
     circuit.barrier()
     
-    #2
+    
+    #2: Hadamard to get binary proto-query superpos
     [circuit.h(qubit) for qubit in x]
     circuit.barrier()
     
-    #3
+    
+    #3: build the actual queries
     _build_query(circuit, x, q)
     circuit.barrier()
     
-    #4
+    
+    #4: find corresponding oracle b answers
     build_mastermind_circuit(circuit, q=q, a=c, b=b, c=d, secret_sequence=secret_sequence, keep_a=False)
     circuit.barrier()
     
-    #5
+    
+    #5: init c reg to k (=power of two)
     circuit.x(c[-1])  # should be MSB
     circuit.barrier()
     
-    #6
+    
+    #6: calc ell in reg c
     icount(circuit, a=b, b=c, step=1)  # or step = -1?
     circuit.barrier()
     
-    #7
+    
+    #7: boolean 1
     compare(circuit, a=b, b=c, c=d)
     circuit.barrier()
     
-    #8
+    
+    #8: boolean 2&3
     circuit.x(e)
     [circuit.x(qubit) for qubit in b0]
     _ncx(circuit, a=b0, b=e)
@@ -84,11 +92,13 @@ def build_find_colours_circuit(circuit, b0, x, q, b, c, d, e, f, secret_sequence
     circuit.x(d)
     circuit.barrier()
     
-    #9
+    
+    #9: Z gate to get inner product rotation
     circuit.z(f)
     circuit.barrier()
     
-    #10
+    
+    #10: undo steps 3-8
     circuit.x(d)
     _ncx(circuit, a=[x[0], d, e], b=f)
     _ncx(circuit, a=[b0[0], d, e], b=f)
@@ -99,14 +109,21 @@ def build_find_colours_circuit(circuit, b0, x, q, b, c, d, e, f, secret_sequence
     _ncx(circuit, a=b0, b=e)
     [circuit.x(qubit) for qubit in b0]
     circuit.x(e)
+    
     compare(circuit, a=b, b=c, c=d)
     icount(circuit, a=b, b=c, step=1)  # or step = -1?
     circuit.x(c[-1])  # should be MSB
-    build_mastermind_circuit(circuit, q=q, a=c, b=b, c=d, secret_sequence=secret_sequence, keep_a=False).inverse()
+    
+    temp_circuit = QuantumCircuit(q,b,c,d) #(beuned inverse of MMb)
+    build_mastermind_circuit(temp_circuit, q=q, a=c, b=b, c=d, secret_sequence=secret_sequence, keep_a=False)
+    temp_circuit.inverse()
+    circuit += temp_circuit
+    
     _build_query(circuit, x, q)
     circuit.barrier()
     
-    #11
+    
+    #11: get x_s
     [circuit.h(qubit) for qubit in x]
     circuit.barrier()
     
