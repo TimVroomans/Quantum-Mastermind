@@ -49,10 +49,15 @@ class Buhrman(Game, ABC):
                     self.secret_string_guess = [c if j==1 else self.secret_string_guess[i] for (i,j) in enumerate(pos)]
         else:
             # otherwise: more complex continued alg
-            # INCOMPLETE IMPLEMENTATION: ONLY LOOKS AT THE POSITIONS OF THE FIRST COLOUR!!!!!!!!!!!!!!!!
-            c=1
-            pos = self.find_colour_positions_alt(c)
-            print("Positions for colour %d: %s" % (c, str(pos)))
+            # BEUNED IMPLEMENTATION: 
+            #  IT USES THE ALT POSITION FINDER FOR ALL COLOURS, 
+            #  WHILE IT'S ONLY NECESSARY FOR THE FIRST COLOUR!!! 
+            #  (although it does require a slight modification to the default alg)
+            for c in range(self.k):
+                pos = self.find_colour_positions_alt(c)
+                print("Positions for colour %d: %s" % (c, str(pos)))
+                # change the guess according to the output
+                self.secret_string_guess = [c if j==1 else self.secret_string_guess[i] for (i,j) in enumerate(pos)]
         
         print("\n\nSecret string:\n\n     %s" % (str(self.secret_string_guess)))
                     
