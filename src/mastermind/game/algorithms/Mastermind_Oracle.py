@@ -6,7 +6,7 @@ Created on Mon Jan  4 16:07:48 2021
 """
 from itertools import permutations
 from mastermind.arithmetic.comp import compare
-from mastermind.arithmetic.count import count
+from mastermind.arithmetic.count import count, icount
 
 def build_mastermind_circuit(circuit, q, a, b, c, secret_sequence, keep_a=True):
     '''
@@ -111,7 +111,7 @@ def mastermind_stage(circuit, q, a, b, c, p, keep_a=False):
         circuit.reset(c)
         return circuit
 
-def count_permuted(circuit, q, a, p):
+def count_permuted(circuit, q, a, p, do_inverse=False):
     '''
     Counts correct positions and colours in query q according to permutation p.
 
@@ -143,7 +143,10 @@ def count_permuted(circuit, q, a, p):
     binary_to_x_gates(circuit, q, binary_list)
     
     # Count the amount of correct qubits
-    count(circuit, q, a, amount_colour_bits)
+    if not do_inverse:
+        count(circuit, q, a, amount_colour_bits)
+    else:
+        icount(circuit, q, a, amount_colour_bits)
     
     # permute back
     binary_to_x_gates(circuit, q, binary_list)

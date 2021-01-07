@@ -6,5 +6,5 @@ save_non_project_files = False
 
 [main]
 version = 0.2.0
-recent_files = ['src\\launch.py', 'src\\mastermind\\game\\algorithms\\Find_Colours.py']
+recent_files = ['src\\launch.py', 'src\\mastermind\\game\\game.py', 'src\\mastermind\\game\\algorithms\\Buhrman.py', 'src\\mastermind\\game\\algorithms\\Mastermind_Oracle.py', 'src\\mastermind\\game\\algorithms\\Find_Colours.py', 'src\\mastermind\\game\\algorithms\\Find_Colour_Positions.py']
 

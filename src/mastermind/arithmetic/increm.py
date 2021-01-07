@@ -15,7 +15,7 @@ def increment(circuit, q):
         circuit.rz(pi/2**(n-1-i), qubit)    
     iqft(circuit, q)
     return circuit
-def decrement(circuit, q, n):
+def decrement(circuit, q):
     """Subtracts +1 on number spanned by qubits q to q+n-1"""
     n = len(q)
     qft(circuit, q)
