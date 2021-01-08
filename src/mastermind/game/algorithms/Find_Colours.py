@@ -42,7 +42,6 @@ def build_find_colours_circuit(circuit, b0, x, q, b, c, d, e, f, secret_sequence
         ...
 
     '''
-    print('Building quantum circuit...')
     
     #0: init
     circuit.barrier()
@@ -198,7 +197,6 @@ def build_mastermind_circuit_beun(circuit, x, b, secret_sequence, do_inverse=Fal
         Circuit appended with mastermind circuit.
 
     '''
-    print('Building quantum circuit...')
     
     k = len(x)
     

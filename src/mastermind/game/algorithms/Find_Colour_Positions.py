@@ -40,7 +40,6 @@ def build_find_colour_positions_circuit(circuit, x, q, a, c, d, secret_sequence)
         ...
 
     '''
-    print('Building quantum circuit...')
     
     #0: init
     circuit.barrier()
@@ -104,7 +103,6 @@ def build_find_colour_positions_alt_circuit(circuit, x, q, a, b, c, k, secret_se
         ...
 
     '''
-    print('Building quantum circuit...')
     
     logk = int(np.ceil(np.log2(k)))
     

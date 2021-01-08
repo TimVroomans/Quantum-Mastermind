@@ -4,7 +4,7 @@ from mastermind.game.textgame import TextClassical, TextKnuth, TextBuhrman, Text
 from mastermind.game.visual.visual_mastermind import GameView
 
 def _choose_game():
-    print("Choose what type of game you want:")
+    print("\n\nChoose what type of game you want:")
     print("1. Classical")
     print("2. Quantum")
     print("3. Knuth (Classical Algorithm)")
@@ -32,7 +32,7 @@ def _choose_game():
 
 
 def _choose_interface():
-    print("Choose what type of interface you want:")
+    print("\n\nChoose what type of interface you want:")
     print("1. Textual")
     print("2. Visual")
     while True:

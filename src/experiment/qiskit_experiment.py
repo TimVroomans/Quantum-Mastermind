@@ -52,7 +52,7 @@ def _setup(B):
 
 class QiskitExperiment():        
     def __init__(self):
-        print('Choose backend:')
+        print('\n\nChoose backend:')
         print('LOCAL: local qasm simulator,')
         print('IBMQ: qasm simulator at IBMQ,')
         while True:
