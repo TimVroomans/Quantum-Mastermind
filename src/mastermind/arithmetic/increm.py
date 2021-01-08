@@ -69,7 +69,7 @@ def cnincrement(circuit, c, q):
     iqft(circuit, q)
     circuit.barrier()
     return circuit
-def cndecrement(circuit, q, n, c1, nc):
+def cndecrement(circuit, c, q):
     n = len(q)
     nc = len(c)
     """Subtracts +1. On qubits q to q+n-1 of circuit with nc control qubits from qubit c1"""

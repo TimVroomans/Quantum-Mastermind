@@ -26,13 +26,12 @@ class Buhrman(Game, ABC):
         self.logn = int(np.ceil(np.log2(self.n)))
         self.logk = int(np.ceil(np.log2(self.k)))
         
-        # initial guess
+        # Guess init
         self.secret_string_guess = [-1]*self.n  # -1 to clearly indicate if something has fucked up
         
-        
         # find which colours are used, using first part of Buhrman
-        self.used_colours = [any([b==i for b in self.sequence]) for i in range(self.k)] # beun implementation
-        # self.used_colours = self.find_colours()
+        # self.used_colours = [any([b==i for b in self.sequence]) for i in range(self.k)] # beun implementation
+        self.used_colours = self.find_colours()
         print("\nUsed colours: %s\n" % (str(list(compress(list(range(self.k)),self.used_colours)))))
         
         # See if all colours are used
@@ -60,6 +59,11 @@ class Buhrman(Game, ABC):
                 self.secret_string_guess = [c if j==1 else self.secret_string_guess[i] for (i,j) in enumerate(pos)]
         
         print("\n\nSecret string:\n\n     %s" % (str(self.secret_string_guess)))
+        
+        if self.secret_string_guess == list(self.sequence):
+            print("\nThis guess is correct!\n")
+        else:
+            print("\nThis guess is incorrect! It should be %s!\n" % (str(list(self.sequence))))
                     
             
         
@@ -174,7 +178,7 @@ class Buhrman(Game, ABC):
     def random_sequence(self):
         # Choose numbers between 0 and pin_amount (do this num_slots times)
         
-        arr = np.array([0, 1, 2, 3])
+        arr = np.array([0,1,2,3])
         print("\n\nWATCH OUT: RUNNING WITH HARDCODED STRING %s !!!\n\n" % (arr))
         return arr
-        #return np.random.randint(0, self.pin_amount, size=self.num_slots)
+        # return np.random.randint(0, self.pin_amount, size=self.num_slots)

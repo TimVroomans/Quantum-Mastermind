@@ -8,9 +8,9 @@ from qiskit import *
 from mastermind.arithmetic.qft import qft, iqft
 from mastermind.arithmetic.increm import countcnincrement, countcndecrement
 
-def count(circuit, a, b,step):
+def count(circuit, a, b, step=1):
     '''
-    Count function for 4 colours. Takes register a as control qubits. 
+    Count function for k colours. Takes register a as control qubits. 
     Counts in register b 
 
     Parameters
@@ -19,12 +19,10 @@ def count(circuit, a, b,step):
         Quantum circuit to be appended with counter.
     a  : QuantumRegister
         Control register a
-    an : Integer
-        Length of register a
     b  : QuantumRegister
         Count register b
-    bn : Integer
-        Lenght of register b
+    step : int
+        the length of each individual sub-interval in register a
 
     Returns
     -------
@@ -43,7 +41,7 @@ def count(circuit, a, b,step):
     return circuit 
 
 
-def icount(circuit, a, b, step):
+def icount(circuit, a, b, step=1):
     '''
     Count function for k colours. Takes register a as control qubits. 
     Counts in register b 
@@ -54,12 +52,10 @@ def icount(circuit, a, b, step):
         Quantum circuit to be appended with counter.
     a  : QuantumRegister
         Control register a
-    an : Integer
-        Length of register a
     b  : QuantumRegister
         Count register b
-    bn : Integer
-        Lenght of register b
+    step : int
+        the length of each individual sub-interval in register a
 
     Returns
     -------
