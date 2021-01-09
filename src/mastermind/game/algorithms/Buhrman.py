@@ -53,8 +53,13 @@ class Buhrman(Game, ABC):
             #  IT USES THE ALT POSITION FINDER FOR ALL COLOURS, 
             #  WHILE IT'S ONLY NECESSARY FOR THE FIRST COLOUR!!! 
             #  (although it does require a slight modification to the default alg)
+            pos0 = []
             for c in range(self.k):
-                pos = self.find_colour_positions_alt(c)
+                if c == 0:
+                    pos = self.find_colour_positions_alt(c)
+                    pos0 = pos
+                else:
+                    pos = self.find_colour_positions(c, 0, pos0)
                 print("Positions for colour %d: %s" % (c, str(pos)))
                 # change the guess according to the output
                 self.secret_string_guess = [c if j==1 else self.secret_string_guess[i] for (i,j) in enumerate(pos)]
@@ -101,7 +106,7 @@ class Buhrman(Game, ABC):
         return res_x
     
     
-    def find_colour_positions(self, c, d):
+    def find_colour_positions(self, c, d, d_positions=None):
         
         # Quantum Registers
         self.x = QuantumRegister(self.k, 'x')
@@ -116,7 +121,7 @@ class Buhrman(Game, ABC):
         # If there is no check circuit:
         if self.circuit.size() == 0:
             # Build check circuit
-            build_find_colour_positions_circuit(self.circuit, self.x, self.q, self.a, c, d, self.sequence)
+            build_find_colour_positions_circuit(self.circuit, self.x, self.q, self.a, c, d, self.sequence, d_positions)
             # Measure register x
             self.circuit.measure(self.x, self.classical_x)
             
@@ -179,7 +184,7 @@ class Buhrman(Game, ABC):
     def random_sequence(self):
         # Choose numbers between 0 and pin_amount (do this num_slots times)
         
-        # arr = np.array([0,1,2,3])
-        # print("\n\nWATCH OUT: RUNNING WITH HARDCODED STRING %s !!!\n\n" % (arr))
-        # return arr
-        return np.random.randint(0, self.pin_amount, size=self.num_slots)
+        arr = np.array([0,0,1,3])
+        print("\n\nWATCH OUT: RUNNING WITH HARDCODED STRING %s !!!\n\n" % (arr))
+        return arr
+        # return np.random.randint(0, self.pin_amount, size=self.num_slots)

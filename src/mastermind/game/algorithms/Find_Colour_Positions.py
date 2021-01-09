@@ -8,11 +8,11 @@ Created on Mon Jan  4 16:08:17 2021
 from mastermind.game.algorithms.Mastermind_Oracle import build_mastermind_circuit, count_permuted
 from mastermind.arithmetic.dradder import add, sub
 from mastermind.arithmetic.count import count, icount
-from mastermind.arithmetic.increm import increment, decrement
+from mastermind.arithmetic.increm import increment, decrement, cnincrement, cndecrement
 from qiskit import QuantumCircuit
 import numpy as np
 
-def build_find_colour_positions_circuit(circuit, x, q, a, c, d, secret_sequence):
+def build_find_colour_positions_circuit(circuit, x, q, a, c, d, secret_sequence, d_positions=None):
     '''
     Builds mastermind check circuit on circuit. Requires the inputs q, a, b, c
     and secret_sequence. You can optionally choose to measure the outcomes.
@@ -56,11 +56,26 @@ def build_find_colour_positions_circuit(circuit, x, q, a, c, d, secret_sequence)
     count_permuted(circuit, q=q, a=a, p=secret_sequence)
     circuit.barrier()
     
+    #3.alt: sub d positions if used
+    if d_positions != None:
+        for (i,j) in enumerate(d_positions):
+            if j == 1:
+                circuit.x(x[-i])
+                cndecrement(circuit, [x[-i]], a)
+                circuit.x(x[-i])
+                circuit.barrier()
+    
     #4: Z gate on output LSB
     circuit.z(a[0]) # should be the LSB; maybe that's actually a[-1]!!!!!!!!!!
     circuit.barrier()
     
     #5: undo step 2 & 3
+    if d_positions != None:
+        for (i,j) in enumerate(d_positions):
+            if j == 1:
+                circuit.x(x[-i])
+                cnincrement(circuit, [x[-i]], a)
+                circuit.x(x[-i])
     count_permuted(circuit, q=q, a=a, p=secret_sequence, do_inverse=True)
     _build_query_two_colours(circuit, x, q, c, d)
     circuit.barrier()

@@ -34,19 +34,17 @@ class QuantumGame(Game, ABC):
         super(QuantumGame, self).__init__(turns, num_slots, colour_amount, ask_input)
         
         
-    def check_input(self, query, secret_sequence):  
+    def check_input(self, query, secret_sequence):
+        print(secret_sequence)
         # If there is no check circuit:
         if self.circuit.size() == 0:
             # Build check circuit
-            oracle.build_mastermind_circuit(self.circuit, self.q, self.a, self.b, self.c, self.sequence) 
+            # oracle.build_mastermind_circuit(self.circuit, self.q, self.a, self.b, self.c, self.sequence) 
+            oracle.build_mastermind_a_circuit(self.circuit, self.q, self.a, secret_sequence)
+            oracle.build_mastermind_b_circuit(self.circuit, self.q, self.b, secret_sequence)
             # Measure registers a and b
             self.circuit.measure(self.a, self.classical_a)
             self.circuit.measure(self.b, self.classical_b)
-            # Reset all registers for new query
-            self.circuit.reset(self.q)
-            self.circuit.reset(self.a)
-            self.circuit.reset(self.b)
-            self.circuit.reset(self.c)
         
         # Prepare q register in query
         binary_query = [bin(q)[2:].zfill(self.amount_colour_qubits) for q in query]
@@ -81,4 +79,8 @@ class QuantumGame(Game, ABC):
     
     def random_sequence(self):
         # Choose numbers between 0 and pin_amount (do this num_slots times)
+        
+        # arr = np.array([2, 3, 0, 0])
+        # print("\n\nWATCH OUT: RUNNING WITH HARDCODED STRING %s !!!\n\n" % (arr))
+        # return arr
         return np.random.randint(0, self.pin_amount, size=self.num_slots)
