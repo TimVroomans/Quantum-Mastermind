@@ -58,7 +58,7 @@ def build_mastermind_b_circuit(circuit, q, b, secret_sequence, do_inverse = Fals
     n = len(secret_sequence)
     logk = len(q)//n
     # how often which colour occurs in the list
-    secret_sequence_colours_amount = [list(secret_sequence).count(i) for i in range(n)]
+    secret_sequence_colours_amount = [list(secret_sequence).count(i) for i in range(2**logk)] # rather k, but that's annoying
     
     qft(circuit, b)
     for (c, nc) in enumerate(secret_sequence_colours_amount):
@@ -83,16 +83,11 @@ def build_mastermind_b_circuit(circuit, q, b, secret_sequence, do_inverse = Fals
                     qtemp = []
                     for qlist in qtemptemp:
                         qtemp += qlist
-                    if comp>0:
+                    if comp != 0:
                         if not do_inverse:
                             countcnincrement(circuit, qtemp, b, amount=comp)
                         else:
                             countcndecrement(circuit, qtemp, b, amount=comp)
-                    elif comp<0:
-                        if not do_inverse:
-                            countcndecrement(circuit, qtemp, b, amount=comp)
-                        else:
-                            countcnincrement(circuit, qtemp, b, amount=comp)
             binary_to_x_gates(circuit, q, binary_list)
     iqft(circuit, b)
     
