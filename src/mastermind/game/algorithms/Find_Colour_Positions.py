@@ -5,7 +5,7 @@ Created on Mon Jan  4 16:08:17 2021
 @author: timvr
 """
 
-from mastermind.game.algorithms.Mastermind_Oracle import build_mastermind_circuit, count_permuted
+from mastermind.game.algorithms.Mastermind_Oracle import build_mastermind_a_circuit, build_mastermind_b_circuit
 from mastermind.arithmetic.dradder import add, sub
 from mastermind.arithmetic.count import count, icount
 from mastermind.arithmetic.increm import increment, decrement, cnincrement, cndecrement
@@ -53,7 +53,7 @@ def build_find_colour_positions_circuit(circuit, x, q, a, c, d, secret_sequence,
     circuit.barrier()
     
     #3: get Oracle a response
-    count_permuted(circuit, q=q, a=a, p=secret_sequence)
+    build_mastermind_a_circuit(circuit, q, a, secret_sequence)
     circuit.barrier()
     
     #3.alt: sub d positions if used
@@ -76,7 +76,7 @@ def build_find_colour_positions_circuit(circuit, x, q, a, c, d, secret_sequence,
                 circuit.x(x[-i])
                 cnincrement(circuit, [x[-i]], a)
                 circuit.x(x[-i])
-    count_permuted(circuit, q=q, a=a, p=secret_sequence, do_inverse=True)
+    build_mastermind_a_circuit(circuit, q, a, secret_sequence, do_inverse=True)
     _build_query_two_colours(circuit, x, q, c, d)
     circuit.barrier()
     
@@ -135,7 +135,7 @@ def build_find_colour_positions_alt_circuit(circuit, x, q, a, b, c, k, secret_se
         circuit.barrier()
         
         #2b: get Oracle a response
-        count_permuted(circuit, q=q, a=a, p=secret_sequence)
+        build_mastermind_a_circuit(circuit, q, a, secret_sequence)
         circuit.barrier()
         
         #2c: add to output reg
@@ -143,7 +143,7 @@ def build_find_colour_positions_alt_circuit(circuit, x, q, a, b, c, k, secret_se
         circuit.barrier()
         
         #2d: undo #2a & #2b
-        count_permuted(circuit, q=q, a=a, p=secret_sequence, do_inverse=True)
+        build_mastermind_a_circuit(circuit, q, a, secret_sequence, do_inverse=True)
         _build_query_two_colours(circuit, x, q, c, d)
         circuit.barrier()
     
@@ -172,9 +172,9 @@ def build_find_colour_positions_alt_circuit(circuit, x, q, a, b, c, k, secret_se
     icount(circuit, a=x, b=b, step=1)
     for d in range(k):
         _build_query_two_colours(circuit, x, q, c, d)
-        count_permuted(circuit, q=q, a=a, p=secret_sequence)
+        build_mastermind_a_circuit(circuit, q, a, secret_sequence)
         sub(circuit, a, b)
-        count_permuted(circuit, q=q, a=a, p=secret_sequence, do_inverse=True)
+        build_mastermind_a_circuit(circuit, q, a, secret_sequence, do_inverse=True)
         _build_query_two_colours(circuit, x, q, c, d)
     
     #8

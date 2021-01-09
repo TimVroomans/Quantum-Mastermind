@@ -21,11 +21,8 @@ class QuantumGame(Game, ABC):
         self.classical_a = ClassicalRegister(self.amount_answer_qubits, 'ca')
         self.classical_b = ClassicalRegister(self.amount_answer_qubits, 'cb')
         
-        # Compare qubit register
-        self.c = QuantumRegister(1, 'c')
-        
         # Build circuit from registers
-        self.circuit = QuantumCircuit(self.q, self.a, self.b, self.c, self.classical_a, self.classical_b)
+        self.circuit = QuantumCircuit(self.q, self.a, self.b, self.classical_a, self.classical_b)
         
         # Set up qiskit experiment
         self.experiment = QiskitExperiment()
@@ -39,7 +36,6 @@ class QuantumGame(Game, ABC):
         # If there is no check circuit:
         if self.circuit.size() == 0:
             # Build check circuit
-            # oracle.build_mastermind_circuit(self.circuit, self.q, self.a, self.b, self.c, self.sequence) 
             oracle.build_mastermind_a_circuit(self.circuit, self.q, self.a, secret_sequence)
             oracle.build_mastermind_b_circuit(self.circuit, self.q, self.b, secret_sequence)
             # Measure registers a and b
@@ -48,7 +44,7 @@ class QuantumGame(Game, ABC):
         
         # Prepare q register in query
         binary_query = [bin(q)[2:].zfill(self.amount_colour_qubits) for q in query]
-        prep_q = QuantumCircuit(self.q, self.a, self.b, self.c, self.classical_a, self.classical_b)
+        prep_q = QuantumCircuit(self.q, self.a, self.b, self.classical_a, self.classical_b)
         for (i,binary) in enumerate(binary_query):
             for (j,bit) in enumerate(binary[::-1]):
                 if bit == '1':

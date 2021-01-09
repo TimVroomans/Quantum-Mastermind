@@ -184,7 +184,7 @@ class Buhrman(Game, ABC):
     def random_sequence(self):
         # Choose numbers between 0 and pin_amount (do this num_slots times)
         
-        arr = np.array([0,0,1,3])
-        print("\n\nWATCH OUT: RUNNING WITH HARDCODED STRING %s !!!\n\n" % (arr))
-        return arr
-        # return np.random.randint(0, self.pin_amount, size=self.num_slots)
+        # arr = np.array([0,1,2,3])
+        # print("\n\nWATCH OUT: RUNNING WITH HARDCODED STRING %s !!!\n\n" % (arr))
+        # return arr
+        return np.random.randint(0, self.pin_amount, size=self.num_slots)
