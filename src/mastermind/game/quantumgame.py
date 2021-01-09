@@ -32,7 +32,6 @@ class QuantumGame(Game, ABC):
         
         
     def check_input(self, query, secret_sequence):
-        print(secret_sequence)
         # If there is no check circuit:
         if self.circuit.size() == 0:
             # Build check circuit
