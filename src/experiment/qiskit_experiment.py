@@ -55,6 +55,7 @@ class QiskitExperiment():
         print('\n\nChoose backend:')
         print('LOCAL: local qasm simulator,')
         print('IBMQ: qasm simulator at IBMQ,')
+        print('QI: QX single-node qasm simulator at Quantum Inspire')
         while True:
             try:
                 backend = str(input())
