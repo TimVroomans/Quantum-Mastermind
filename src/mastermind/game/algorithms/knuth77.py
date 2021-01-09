@@ -117,7 +117,7 @@ class Knuth(Game, ABC):
             move = (0, 0, 1, 1)
         else:
             # Generate the scores via minmax method
-            self._min_max()
+            _min_max(self)
 
             # Select the moves with the highest scores
             move_indices = np.where(self._Score == np.max(self._Score))[0]
