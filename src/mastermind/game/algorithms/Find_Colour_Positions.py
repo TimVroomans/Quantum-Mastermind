@@ -60,9 +60,9 @@ def build_find_colour_positions_circuit(circuit, x, q, a, c, d, secret_sequence,
     if d_positions != None:
         for (i,j) in enumerate(d_positions):
             if j == 1:
-                circuit.x(x[-i])
-                cndecrement(circuit, [x[-i]], a)
-                circuit.x(x[-i])
+                circuit.x(x[i])
+                cndecrement(circuit, [x[i]], a)
+                circuit.x(x[i])
                 circuit.barrier()
     
     #4: Z gate on output LSB
@@ -73,9 +73,9 @@ def build_find_colour_positions_circuit(circuit, x, q, a, c, d, secret_sequence,
     if d_positions != None:
         for (i,j) in enumerate(d_positions):
             if j == 1:
-                circuit.x(x[-i])
-                cnincrement(circuit, [x[-i]], a)
-                circuit.x(x[-i])
+                circuit.x(x[i])
+                cnincrement(circuit, [x[i]], a)
+                circuit.x(x[i])
     build_mastermind_a_circuit(circuit, q, a, secret_sequence, do_inverse=True)
     _build_query_two_colours(circuit, x, q, c, d)
     circuit.barrier()

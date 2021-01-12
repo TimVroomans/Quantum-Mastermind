@@ -49,10 +49,6 @@ class Buhrman(Game, ABC):
                     self.secret_string_guess = [c if j==1 else self.secret_string_guess[i] for (i,j) in enumerate(pos)]
         else:
             # otherwise: more complex continued alg
-            # BEUNED IMPLEMENTATION: 
-            #  IT USES THE ALT POSITION FINDER FOR ALL COLOURS, 
-            #  WHILE IT'S ONLY NECESSARY FOR THE FIRST COLOUR!!! 
-            #  (although it does require a slight modification to the default alg)
             pos0 = []
             for c in range(self.k):
                 if c == 0:
@@ -60,7 +56,7 @@ class Buhrman(Game, ABC):
                     pos0 = pos
                 else:
                     pos = self.find_colour_positions(c, 0, pos0)
-                print("Positions for colour %d: %s" % (c, str(pos)))
+                print("     Colour %d: %s" % (c, str(pos)))
                 # change the guess according to the output
                 self.secret_string_guess = [c if j==1 else self.secret_string_guess[i] for (i,j) in enumerate(pos)]
         
@@ -184,7 +180,7 @@ class Buhrman(Game, ABC):
     def random_sequence(self):
         # Choose numbers between 0 and pin_amount (do this num_slots times)
         
-        # arr = np.array([0,1,2,3])
+        # arr = np.array([2,1,3,0])
         # print("\n\nWATCH OUT: RUNNING WITH HARDCODED STRING %s !!!\n\n" % (arr))
         # return arr
         return np.random.randint(0, self.pin_amount, size=self.num_slots)
