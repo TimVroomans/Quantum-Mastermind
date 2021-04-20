@@ -7,9 +7,10 @@ Created on Mon Jan  4 16:07:48 2021
 import math
 import numpy as np
 from itertools import permutations, combinations
+from mastermind.arithmetic.dradder import cadd, csub
 from mastermind.arithmetic.comp import compare
 from mastermind.arithmetic.count import count, icount
-from mastermind.arithmetic.increm import countcnincrement, countcndecrement
+from mastermind.arithmetic.increm import increment, decrement, countcnincrement, countcndecrement
 from mastermind.arithmetic.qft import qft, iqft
 
 def build_mastermind_a_circuit(circuit, q, a, secret_sequence, do_inverse=False):
@@ -90,6 +91,76 @@ def build_mastermind_b_circuit(circuit, q, b, secret_sequence, do_inverse = Fals
                             countcndecrement(circuit, qtemp, b, amount=comp)
             binary_to_x_gates(circuit, q, binary_list)
     iqft(circuit, b)
+    
+    return circuit
+
+def build_mastermind_b_circuit_v2(circuit, q, b, c, d, secret_sequence, do_inverse = False):
+    n = len(secret_sequence)
+    logk = len(q)//n
+    # how often which colour occurs in the list
+    secret_sequence_colours_amount = [list(secret_sequence).count(i) for i in range(2**logk)] # rather k, but that's annoying
+    
+    qft(circuit, b)
+    for (clr, nc) in enumerate(secret_sequence_colours_amount):
+        if nc != 0:
+            binary_list = [bin(clr)[2:].zfill(logk)]*n
+            binary_to_x_gates(circuit, q, binary_list)
+            if not do_inverse:
+                
+                qft(circuit, c)
+                for i in range(n):
+                    countcnincrement(circuit, q[(logk*i):(logk*(i+1))], c)
+                iqft(circuit, c)
+                qft(circuit, [*c, d])
+                decrement(circuit, [*c, d], amount=nc)
+                iqft(circuit, [*c, d])
+                increment(circuit, b, amount=nc)
+                
+                #
+                
+                csub(circuit, a=c, b=b, c=d, do_qft=False)
+                
+                #
+                
+                decrement(circuit, b, amount=nc)
+                qft(circuit, [*c, d])
+                increment(circuit, [*c, d], amount=nc)
+                iqft(circuit, [*c, d])
+                qft(circuit, c)
+                for i in range(n):
+                    countcndecrement(circuit, q[(logk*i):(logk*(i+1))], c)
+                iqft(circuit, c)
+                
+            else:
+                
+                qft(circuit, c)
+                for i in range(n):
+                    countcndecrement(circuit, q[(logk*i):(logk*(i+1))], c)
+                iqft(circuit, c)
+                qft(circuit, [*c, d])
+                increment(circuit, [*c, d], amount=nc)
+                iqft(circuit, [*c, d])
+                decrement(circuit, b, amount=nc)
+                
+                #
+                
+                cadd(circuit, a=c, b=b, c=d, do_qft=False)
+                
+                #
+                
+                increment(circuit, b, amount=nc)
+                qft(circuit, [*c, d])
+                decrement(circuit, [*c, d], amount=nc)
+                iqft(circuit, [*c, d])
+                qft(circuit, c)
+                for i in range(n):
+                    countcnincrement(circuit, q[(logk*i):(logk*(i+1))], c)
+                iqft(circuit, c)
+                
+            binary_to_x_gates(circuit, q, binary_list)
+    iqft(circuit, b)
+    
+    return circuit
     
 def binary_to_x_gates(circuit, q, secret_binary):
     '''

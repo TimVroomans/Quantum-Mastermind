@@ -13,7 +13,7 @@ from mastermind.arithmetic.increm import increment, decrement, cnincrement, cnde
 from mastermind.arithmetic.count import count, icount
 from mastermind.arithmetic.comp import compare
 
-from mastermind.game.algorithms.Mastermind_Oracle import build_mastermind_a_circuit, build_mastermind_b_circuit
+from mastermind.game.algorithms.Mastermind_Oracle import build_mastermind_a_circuit, build_mastermind_b_circuit, build_mastermind_b_circuit_v2
 from qiskit import QuantumCircuit
 
 def build_find_colours_circuit(circuit, b0, x, q, b, c, d, e, f, secret_sequence):
@@ -66,6 +66,7 @@ def build_find_colours_circuit(circuit, b0, x, q, b, c, d, e, f, secret_sequence
     # build_mastermind_circuit(circuit, q=q, a=c, b=b, c=d, secret_sequence=secret_sequence, keep_a=False)
     # build_mastermind_circuit_beun(circuit, x, b, secret_sequence)
     build_mastermind_b_circuit(circuit, q=q, b=b, secret_sequence=secret_sequence)
+    #build_mastermind_b_circuit_v2(circuit, q=q, b=b, c=c, d=d, secret_sequence=secret_sequence)
     circuit.barrier()
     
     
@@ -125,6 +126,8 @@ def build_find_colours_circuit(circuit, b0, x, q, b, c, d, e, f, secret_sequence
     ##
     # build_mastermind_circuit_beun(circuit, x, b, secret_sequence, do_inverse=True)
     build_mastermind_b_circuit(circuit, q=q, b=b, secret_sequence=secret_sequence, do_inverse=True)
+    #build_mastermind_b_circuit_v2(circuit, q=q, b=b, c=c, d=d, secret_sequence=secret_sequence, do_inverse=True)
+    
     
     _build_query(circuit, x, q)
     circuit.barrier()

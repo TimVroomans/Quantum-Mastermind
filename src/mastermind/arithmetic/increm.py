@@ -7,21 +7,25 @@ from math import pi
 from qiskit import *
 from mastermind.arithmetic.qft import qft, iqft
 
-def increment(circuit, q):
+def increment(circuit, q, do_qft=True, amount=1):
     """Adds +1 on number spanned by qubits q to q+n-1"""
     n = len(q)
-    qft(circuit, q)
+    if do_qft:
+        qft(circuit, q)
     for (i,qubit) in enumerate(q):
-        circuit.rz(pi/2**(n-1-i), qubit)    
-    iqft(circuit, q)
+        circuit.rz(amount*pi/2**(n-1-i), qubit)    
+    if do_qft:
+        iqft(circuit, q)
     return circuit
-def decrement(circuit, q):
+def decrement(circuit, q, do_qft=True, amount=1):
     """Subtracts +1 on number spanned by qubits q to q+n-1"""
     n = len(q)
-    qft(circuit, q)
+    if do_qft:
+        qft(circuit, q)
     for (i,qubit) in enumerate(q):
-        circuit.rz(-pi/2**(n-1-i), qubit)    
-    iqft(circuit, q)
+        circuit.rz(-amount*pi/2**(n-1-i), qubit)    
+    if do_qft:
+        iqft(circuit, q)
     return circuit
 # def c2increment(circuit, q, n, c1, c2):
 #     """Adds +1. On qubits q to q+n-1 of circuit with control qubits c1 and c2"""
@@ -53,37 +57,41 @@ def decrement(circuit, q):
 #     iqft(circuit, q, n)
 #     circuit.barrier()
 #     return circuit
-def cnincrement(circuit, c, q):
+def cnincrement(circuit, c, q, do_qft=True, amount=1):
     n = len(q)
     nc = len(c)
     """Adds +1. On qubits q to q+n-1 of circuit with nc control qubits from qubit c1"""
     circuit.barrier()
-    qft(circuit, q)
-    circuit.barrier()
+    if do_qft:
+        qft(circuit, q)
+        circuit.barrier()
     for (i,qubit) in enumerate(q):
         qcs = QuantumCircuit(1)
-        qcs.rz(pi/2**(n-i-1),0)
+        qcs.rz(amount*pi/2**(n-i-1),0)
         ncrz = qcs.to_gate().control(nc)
         circuit.append(ncrz, [*c, qubit])
     circuit.barrier()
-    iqft(circuit, q)
-    circuit.barrier()
+    if do_qft:
+        iqft(circuit, q)
+        circuit.barrier()
     return circuit
-def cndecrement(circuit, c, q):
+def cndecrement(circuit, c, q, do_qft=True, amount=1):
     n = len(q)
     nc = len(c)
     """Subtracts +1. On qubits q to q+n-1 of circuit with nc control qubits from qubit c1"""
     circuit.barrier()
-    qft(circuit, q)
-    circuit.barrier()
+    if do_qft:
+        qft(circuit, q)
+        circuit.barrier()
     for (i,qubit) in enumerate(q):
         qcs = QuantumCircuit(1)
-        qcs.rz(-pi/2**(n-i-1),0)
+        qcs.rz(-amount*pi/2**(n-i-1),0)
         ncrz = qcs.to_gate().control(nc)
         circuit.append(ncrz, [*c, qubit])
     circuit.barrier()
-    iqft(circuit, q)
-    circuit.barrier()
+    if do_qft:
+        iqft(circuit, q)
+        circuit.barrier()
     return circuit
 
 def countcnincrement(circuit, c, q, amount=1):
