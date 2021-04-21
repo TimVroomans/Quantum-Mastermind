@@ -55,5 +55,6 @@ class TextKnuth(Knuth, TextGame, ClassicalGame):
 class TextQnuth(Knuth, TextGame, QuantumGame):
     pass
 
+
 class TextBuhrman(Buhrman, TextGame, QuantumSolverGame):
     pass

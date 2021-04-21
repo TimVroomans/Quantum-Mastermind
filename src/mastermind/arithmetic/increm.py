@@ -5,99 +5,12 @@ Created on Wed Dec  2 18:25:35 2020
 """
 from math import pi
 from qiskit import *
+from qiskit.circuit.library.standard_gates import PhaseGate
 from mastermind.arithmetic.qft import qft, iqft
 
-def increment(circuit, q, do_qft=True, amount=1):
-    """Adds +1 on number spanned by qubits q to q+n-1"""
-    n = len(q)
-    if do_qft:
-        qft(circuit, q)
-    for (i,qubit) in enumerate(q):
-        circuit.rz(amount*pi/2**(n-1-i), qubit)    
-    if do_qft:
-        iqft(circuit, q)
-    return circuit
-def decrement(circuit, q, do_qft=True, amount=1):
-    """Subtracts +1 on number spanned by qubits q to q+n-1"""
-    n = len(q)
-    if do_qft:
-        qft(circuit, q)
-    for (i,qubit) in enumerate(q):
-        circuit.rz(-amount*pi/2**(n-1-i), qubit)    
-    if do_qft:
-        iqft(circuit, q)
-    return circuit
-# def c2increment(circuit, q, n, c1, c2):
-#     """Adds +1. On qubits q to q+n-1 of circuit with control qubits c1 and c2"""
-#     circuit.barrier()
-#     qft(circuit, q, n)
-#     circuit.barrier()
-#     for qubit in range(q, q+n):
-#         circuit.cp(pi/2**(n+q-qubit), c2,qubit)
-#         circuit.cx(c1,c2)
-#         circuit.cp(-pi/2**(n+q-qubit), c2,qubit)
-#         circuit.cx(c1,c2)
-#         circuit.cp(pi/2**(n+q-qubit), c1,qubit)
-#     circuit.barrier()
-#     iqft(circuit, q, n)
-#     circuit.barrier()
-#     return circuit
-# def c2decrement(circuit, q, n, c1, c2):
-#     """Subtracts +1. On qubits q to q+n-1 of circuit with control qubits c1 and c2"""
-#     circuit.barrier()
-#     qft(circuit, q, n)
-#     circuit.barrier()
-#     for qubit in range(q, q+n):
-#         circuit.cp(-pi/2**(n+q-qubit), c2,qubit)
-#         circuit.cx(c1,c2)
-#         circuit.cp(+pi/2**(n+q-qubit), c2,qubit)
-#         circuit.cx(c1,c2)
-#         circuit.cp(-pi/2**(n+q-qubit), c1,qubit)
-#     circuit.barrier()
-#     iqft(circuit, q, n)
-#     circuit.barrier()
-#     return circuit
-def cnincrement(circuit, c, q, do_qft=True, amount=1):
-    n = len(q)
-    nc = len(c)
-    """Adds +1. On qubits q to q+n-1 of circuit with nc control qubits from qubit c1"""
-    circuit.barrier()
-    if do_qft:
-        qft(circuit, q)
-        circuit.barrier()
-    for (i,qubit) in enumerate(q):
-        qcs = QuantumCircuit(1)
-        qcs.rz(amount*pi/2**(n-i-1),0)
-        ncrz = qcs.to_gate().control(nc)
-        circuit.append(ncrz, [*c, qubit])
-    circuit.barrier()
-    if do_qft:
-        iqft(circuit, q)
-        circuit.barrier()
-    return circuit
-def cndecrement(circuit, c, q, do_qft=True, amount=1):
-    n = len(q)
-    nc = len(c)
-    """Subtracts +1. On qubits q to q+n-1 of circuit with nc control qubits from qubit c1"""
-    circuit.barrier()
-    if do_qft:
-        qft(circuit, q)
-        circuit.barrier()
-    for (i,qubit) in enumerate(q):
-        qcs = QuantumCircuit(1)
-        qcs.rz(-amount*pi/2**(n-i-1),0)
-        ncrz = qcs.to_gate().control(nc)
-        circuit.append(ncrz, [*c, qubit])
-    circuit.barrier()
-    if do_qft:
-        iqft(circuit, q)
-        circuit.barrier()
-    return circuit
 
-def countcnincrement(circuit, c, q, amount=1):
-    '''
-    Does the same as cnincrement but does not perform an automatic qft and
-    iqft at the start/end
+def increment(circuit, q, do_qft=True, amount=1):
+    """Performs +1 on the value of register q
 
     Parameters
     ----------
@@ -105,37 +18,107 @@ def countcnincrement(circuit, c, q, amount=1):
         Quantum circuit to be appended with increment.
     q : QuantumRegister
         Register to be incremented.
-    n : Integer
-        Amount of qubits available in q for increment.
-    c  : Qubit List
-        control qubits
+    do_qft : bool (default: True)
+        Whether to include the QFT and iQFT on reg b.
+    amount : float (default: 1)
+        Multiplication factor on addition (i.e. get b+amount*a).
 
     Returns
     -------
     circuit : QuantumCircuit
         Quantum circuit appended with increment.
-
-    '''
+    
+    """
+    
+    # Constants
     n = len(q)
-    nc = len(c)
-    circuit.barrier()
+    
+    # Optional QFT
+    if do_qft:
+        qft(circuit, q)
+    
+    # Actual increm core gates
     for (i,qubit) in enumerate(q):
-        qcs = QuantumCircuit(1)
-        qcs.rz(amount*pi/2**(n-i-1),0)
-        ncrz = qcs.to_gate().control(nc)
-        circuit.append(ncrz, [*c, qubit])
-    circuit.barrier()
+        circuit.rz(amount*pi/2**(n-1-i), qubit)  
+    
+    # Optional iQFT
+    if do_qft:
+        iqft(circuit, q)
+    
     return circuit
 
-def countcndecrement(circuit, c, q, amount=1):
-    """Does the same as cndecrement but does not perform an automatic qft and iqft at the start/end"""
+
+def cnincrement(circuit, c, q, do_qft=True, amount=1):
+    """Performs +1 on the value of register q, controlled by register c
+
+    Parameters
+    ----------
+    circuit : QuantumCircuit
+        Quantum circuit to be appended with increment.
+    q : QuantumRegister
+        Register to be incremented.
+    c : Qubit List
+        Control qubits
+    do_qft : bool (default: True)
+        Whether to include the QFT and iQFT on reg b.
+    amount : float (default: 1)
+        Multiplication factor on addition (i.e. get b+amount*a).
+
+    Returns
+    -------
+    circuit : QuantumCircuit
+        Quantum circuit appended with increment.
+    
+    """
+    
+    # Constants
     n = len(q)
     nc = len(c)
-    circuit.barrier()
+    
+    # Optional QFT
+    if do_qft:
+        circuit.barrier()
+        qft(circuit, q)
+        circuit.barrier()
+    
+    # Actual core (controlled) increm gates
     for (i,qubit) in enumerate(q):
-        qcs = QuantumCircuit(1)
-        qcs.rz(-amount*pi/2**(n-i-1),0)
-        ncrz = qcs.to_gate().control(nc)
-        circuit.append(ncrz, [*c, qubit])
-    circuit.barrier()
+        # qcs = QuantumCircuit(1)
+        # qcs.rz(amount*pi/2**(n-i-1),0)
+        # ncrz = qcs.to_gate().control(nc)
+        # circuit.append(ncrz, [*c, qubit])
+        ncp = PhaseGate(amount*pi/2**(n-i-1)).control(nc)
+        circuit.append(ncp, [*c, qubit])
+        
+    
+    # Optional iQFT
+    if do_qft:
+        circuit.barrier()
+        iqft(circuit, q)
+        circuit.barrier()
+    
+    return circuit
+
+
+def decrement(circuit, q, do_qft=True, amount=1):
+    """
+    See: increment
+    
+    """
+    
+    # Just increment with flipped sign
+    increment(circuit, q, do_qft, -amount)
+    
+    return circuit
+
+
+def cndecrement(circuit, c, q, do_qft=True, amount=1):
+    """
+    See: cnincrement
+    
+    """
+    
+    # Just cnincrement with flipped sign
+    cnincrement(circuit, c, q, do_qft, -amount)
+    
     return circuit

@@ -29,15 +29,15 @@ def build_find_colour_positions_circuit(circuit, x, q, a, c, d, secret_sequence,
         holds oracle 'a' outputs
     c : integer, c in {0, 1, ..., k-1}
         the colour of which we want to know the positions
-    c : integer, d in {0, 1, ..., k-1}
+    d : integer, d in {0, 1, ..., k-1}
         any colour which does not occur in the secret string
     secret_sequence: List, length n
         Secret sequence.
 
     Returns
     -------
-    circuit : QuantumRegister
-        ...
+    circuit : QuantumCircuit
+        Circuit with find_colour_positions algorithm appended to it.
 
     '''
     
@@ -114,8 +114,8 @@ def build_find_colour_positions_alt_circuit(circuit, x, q, a, b, c, k, secret_se
 
     Returns
     -------
-    circuit : QuantumRegister
-        ...
+    circuit : QuantumCircuit
+        Circuit with find_colour_positions_alt algorithm appended to it.
 
     '''
     
@@ -186,6 +186,34 @@ def build_find_colour_positions_alt_circuit(circuit, x, q, a, b, c, k, secret_se
 
 
 def _build_query_two_colours(circuit, x, q, c, d):
+    '''
+    Performs CNOTs on the query q according to binary proto-query x:
+        - if x[i]=1, then the binary version of c is applied
+        - alse, d is applied.
+
+    Parameters
+    ----------
+    circuit : QuantumCircuit
+        Circuit to build mastermind circuit on.
+    x : QuantumRegister, length n
+        holds binary proto-queries
+    q : QuantumRegister, length n*ceil(log2(k))
+        holds two-colour queries to the oracle
+    a : QuantumRegister, length 1+ceil(log2(k))
+        holds oracle 'a' outputs
+    c : integer, c in {0, 1, ..., k-1}
+        the colour of which we want to know the positions
+    d : integer, d in {0, 1, ..., k-1}
+        any colour which does not occur in the secret string
+    secret_sequence: List, length n
+        Secret sequence.
+
+    Returns
+    -------
+    circuit : QuantumCircuit
+        Circuit with build_query_two_colours sub-circuit appended to it.
+
+    '''
     
     n_x = len(x)
     n_q = len(q)
