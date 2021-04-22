@@ -7,7 +7,7 @@ from experiment.qiskit_experiment import QiskitExperiment
 from .game import Game
 
 class QuantumGame(Game, ABC):
-    def __init__(self, turns=10, num_slots=4, colour_amount=6, ask_input=True, do_v2_b_oracle=False):
+    def __init__(self, turns=10, num_slots=4, colour_amount=6, ask_input=True, do_v2_b_oracle=True):
         # Get some relevant numbers
         self.amount_colour_qubits = int(np.ceil(np.log2(colour_amount)))
         self.amount_answer_qubits = int(np.ceil(np.log2(num_slots))) + 1
@@ -91,7 +91,7 @@ class QuantumGame(Game, ABC):
     def random_sequence(self):
         # Choose numbers between 0 and pin_amount (do this num_slots times)
         
-        # arr = np.array([2, 3, 0, 0])
+        # arr = np.array([0, 0, 1, 1])
         # print("\n\nWATCH OUT: RUNNING WITH HARDCODED STRING %s !!!\n\n" % (arr))
         # return arr
         return np.random.randint(0, self.pin_amount, size=self.num_slots)

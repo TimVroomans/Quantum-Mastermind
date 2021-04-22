@@ -161,8 +161,19 @@ def build_mastermind_b_circuit_v2(circuit, q, b, c, d, s, do_inverse=False):
     # How often which colour occurs in the list
     secret_sequence_colours_amount = [list(s).count(i) for i in range(2**logk)] # rather k, but that's annoying
     
+    # Check if valid secret string
+    if sum(secret_sequence_colours_amount) != n:
+        raise ValueError("Secret string contains illegal values")
+    
+    
     # Put QFT on reg b outside loop for efficiency
     qft(circuit, b)
+    
+    # Add n to reg b (equivalent to adding n_c for each c; more efficient)
+    increment(circuit, b, amount=n, do_qft=False)
+    
+    # Flip sign bit d
+    circuit.x(d)
     # Loop over colours (and how often they're used)
     for (clr, nc) in enumerate(secret_sequence_colours_amount):
         # Only start counting process is colour is used at all
@@ -175,37 +186,36 @@ def build_mastermind_b_circuit_v2(circuit, q, b, c, d, s, do_inverse=False):
             
             if not do_inverse:
                 
-                # Count n_c(q) in reg c...
-                count(circuit, q, c, step=logk)
+                # Add n_c(s) to reg c...
+                increment(circuit, c, amount=nc, do_qft=True)
                 
-                # ... and subtract n_c(s) from that value (with sign bit d)
-                decrement(circuit, [*c, d], amount=nc, do_qft=True)
+                # ... and subtract n_c(q) from that value (with sign bit d)
+                icount(circuit, q, [*c, d], step=logk, do_qft=True)
                 
-                # Also add n_c(s) to the final b reg
-                increment(circuit, b, amount=nc, do_qft=False)
-                
-                # If sign bit d has flipped (i.e. n_c(q)<n_c(s)): subtract difference n_c(s)-n_c(q)
+                # If sign bit d has not flipped (i.e. is True, i.e n_c(q)<n_c(s)):
+                #  subtract difference n_c(s)-n_c(q)
                 csub(circuit, a=c, b=b, c=d, do_qft=False)
                 
-                # Undo step 1-3
-                decrement(circuit, b, amount=nc, do_qft=False)
-                increment(circuit, [*c, d], amount=nc, do_qft=True)
-                icount(circuit, q, c, step=logk)
+                # Undo step 1 & 2
+                count(circuit, q, [*c, d], step=logk, do_qft=True)
+                decrement(circuit, c, amount=nc, do_qft=True)
                 
             else:
                 
                 # Inverse of steps above
-                count(circuit, q, c, step=logk)
-                decrement(circuit, [*c, d], amount=nc, do_qft=True)
-                increment(circuit, b, amount=nc, do_qft=False)
+                increment(circuit, c, amount=nc, do_qft=True)
+                icount(circuit, q, [*c, d], step=logk, do_qft=True)
                 cadd(circuit, a=c, b=b, c=d, do_qft=False)
                 decrement(circuit, b, amount=nc, do_qft=False)
-                increment(circuit, [*c, d], amount=nc, do_qft=True)
-                icount(circuit, q, c, step=logk)
+                count(circuit, q, [*c, d], step=logk, do_qft=True)
+                decrement(circuit, c, amount=nc, do_qft=True)
             
             # Undo query CNOT
             binary_to_x_gates(circuit, q, binary_list)
             circuit.barrier()
+    
+    # Flip sign bit d
+    circuit.x(d)
     
     # Finish sum procedure with iQFT on reg b
     iqft(circuit, b)
